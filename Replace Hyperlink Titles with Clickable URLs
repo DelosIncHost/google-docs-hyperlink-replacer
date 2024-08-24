@@ -1,0 +1,29 @@
+function replaceHyperlinkTextWithURL() {
+  var body = DocumentApp.getActiveDocument().getBody();
+  var paragraphs = body.getParagraphs();
+
+  for (var i = 0; i < paragraphs.length; i++) {
+    var paragraph = paragraphs[i];
+    
+    if (paragraph.getNumChildren() > 0) {
+      for (var j = 0; j < paragraph.getNumChildren(); j++) {
+        var element = paragraph.getChild(j);
+        
+        if (element.getType() == DocumentApp.ElementType.TEXT) {
+          var textElement = element.asText();
+          var text = textElement.getText();
+          
+          for (var k = 0; k < text.length; k++) {
+            var url = textElement.getLinkUrl(k);
+            
+            if (url) {
+              textElement.setText(url); // Set the display text to the URL
+              textElement.setLinkUrl(0, url.length - 1, url); // Retain the hyperlink formatting
+              break; // Stop further processing once replaced
+            }
+          }
+        }
+      }
+    }
+  }
+}
